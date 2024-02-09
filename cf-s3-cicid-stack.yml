@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: MyKey
+
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      ImageId: ami-008677ef1baf82eaf  # Replace with your desired AMI ID
+      UserData:
+        Fn::Base64: 
+          !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd
+            service httpd start
+            chkconfig httpd on
+            echo "<html><body><h1>Hello from EC2 instance</h1></body></html>" > /var/www/html/index.html
+
+  MyCodeCommitRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: MyCodeCommitRepo
+
+Outputs:
+  EC2InstanceIP:
+    Description: Public IP address of the EC2 instance
+    Value: !GetAtt MyEC2Instance.PublicIp
+  CodeCommitRepositoryURL:
+    Description: URL of the CodeCommit repository
+    Value: !GetAtt MyCodeCommitRepository.CloneUrlHttp
