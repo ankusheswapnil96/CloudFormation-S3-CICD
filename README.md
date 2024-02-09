@@ -3,7 +3,7 @@ This template creates an EC2 instance with Apache HTTP server installed and runn
 
 Connect to EC2 instance which is created by cloudformation tempelet @cf-s3-cicd.yaml
 
-Run below to push into codecommit repo
+Run below to push into codecommit repository
 
 git config --global user.name "user"
 git config --global user.email "email-id"
